@@ -21,4 +21,11 @@ COPY libgeos.py  /usr/local/lib/python2.7/dist-packages/django/contrib/gis/geos/
 COPY . .
 ENV DJANGO_SETTINGS_MODULE="kobocat_settings"
 ENV PYTHONPATH="/usr/src/app/env:$PYTHONPATH"
+ENV DJANGO_LIVE_RELOAD="False"
+ENV DJANGO_SITE_ID="1"
+ENV DJANGO_SECRET_KEY="P2Nerc3oG2564z5mHTGUhAoh2CzOMVenWBNMNWgWU796n"
+ENV CLEAN_APT_CACHE="True"
+ENV DATABASE_URL="postgis://$KOBO_PSQL_DB_USER:$KOBO_PSQL_DB_PASS@$DATABASE_SERVER_IP:5432/$KOBO_PSQL_DB_NAME"
+ENV HOME_DIR="/usr/src/app"
+ENV PSQL_ADMIN="postgres"
 ENTRYPOINT ["/bin/sh", "manual.sh"]
