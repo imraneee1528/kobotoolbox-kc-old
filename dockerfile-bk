@@ -1,0 +1,33 @@
+FROM ubuntu:20.04
+LABEL maintainer=imranjuit@gmail.com
+ENV TZ=Asia/Dhaka
+RUN  ln -snf /usr/share/zoneinfo/$TZ /etc/localtime \
+    && echo $TZ > /etc/timezone
+RUN  apt update \
+    && apt install curl htop sudo git nano  wget net-tools python-dev gfortran libatlas-base-dev libjpeg-dev python-numpy  pip python-pandas-doc openjdk-8-jre zlib1g-dev binutils libproj-dev libxslt1-dev libxslt1-dev libxml2-dev libmemcached-dev python-lxml nodejs  uuid-dev libcap-dev libpq-dev postgresql-12-postgis-3  python-dev build-essential   unzip -y
+RUN  apt-get clean
+RUN  curl https://bootstrap.pypa.io/pip/2.7/get-pip.py  > get-pip.py \
+    && python get-pip.py
+ADD req.txt req.tmp
+RUN  pip install -r req.tmp
+RUN  pip install -U -e git+https://bitbucket.org/fomcl/savreaderwriter.git#egg=savreaderwriter
+RUN  pip install -U -e git+https://github.com/kobotoolbox/pyxform.git@66090280c98dd02823bb63b89571d5714b754425#egg=pyxform
+RUN  pip install -U -e git+https://github.com/onaio/python-json2xlsclient.git@62b4645f7b4f2684421a13ce98da0331a9dd66a0#egg=python_json2xlsclient
+RUN  pip install -U -e git+https://github.com/jbalogh/django-nose.git@eca356f1c9ea9c8950d30d27f8d562ca0f6d2ffb#egg=django_nose
+RUN  git clone https://github.com/imraneee1528/Html.git --branch master
+RUN  cd /Html/HTML.py-0.04/ \
+    && python setup.py install
+RUN  pip install django-environ==0.4.5
+COPY libgeos.py  /usr/local/lib/python2.7/dist-packages/django/contrib/gis/geos/
+COPY _librabbitmq.so  /usr/local/lib/python2.7/dist-packages/
+RUN  mkdir  -p /apps/
+RUN  mkdir -p /apps/env \
+    && chmod 777 /apps/env/
+ADD  env/env_kobocat /apps/env/
+ADD env/kobocat_settings.py /apps/env/
+RUN  mkdir  -p /apps/celery
+RUN  mkdir -p /apps/log/ \
+    && chmod 777 /apps/log/
+COPY celery-conf/celery_csvp /etc/default/
+COPY celery-conf/init/celery_csvp /etc/init.d/
+RUN chmod +x /etc/init.d/celery_csvp
