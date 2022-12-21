@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  csvp2-application:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+      - ./:/usr/src/app
+    ports:
+      - 8001:8000
